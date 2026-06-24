@@ -15,6 +15,7 @@ declare -a SERVICES=(
   "ruoyi-job:9203"
   "ruoyi-gen:9204"
   "ruoyi-monitor:9100"
+  "ruoyi-wms:9205"
 )
 
 mvn -q -DskipTests install

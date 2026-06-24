@@ -18,5 +18,6 @@
         <module>ruoyi-job</module>
         <module>ruoyi-file</module>
         <module>ruoyi-gen</module>
+        <module>ruoyi-wms</module>
     </modules>
 </project>

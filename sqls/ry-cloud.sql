@@ -292,9 +292,12 @@ VALUES (1, 'System',   0, 1, 'system',    null, '1', '0', 'M', '0', '0', '',    
        (3, 'Tool',     0, 3, 'tool',      null, '1', '0', 'M', '0', '0', '',     'tool',    'admin', NOW(), 'tool catalog'),
        (100, 'User',   1, 1, 'user',      'system/user/index',     '1', '0', 'C', '0', '0', 'system:user:list',    'user',   'admin', NOW(), 'user menu'),
        (101, 'Role',   1, 2, 'role',      'system/role/index',     '1', '0', 'C', '0', '0', 'system:role:list',    'peoples','admin', NOW(), 'role menu'),
-       (102, 'Menu',   1, 3, 'menu',      'system/menu/index',     '1', '0', 'C', '0', '0', 'system:menu:list',    'tree-table','admin', NOW(), 'menu menu');
+       (102, 'Menu',   1, 3, 'menu',      'system/menu/index',     '1', '0', 'C', '0', '0', 'system:menu:list',    'tree-table','admin', NOW(), 'menu menu'),
 
-INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1, 1), (1, 2), (1, 3), (1, 100), (1, 101), (1, 102), (2, 1);
+       (4, 'WMS',      0, 4, 'wms',       null, '1', '0', 'M', '0', '0', '',     'build',   'admin', NOW(), 'wms catalog'),
+       (200, 'Community', 4, 1, 'community', 'wms/community/index',  '1', '0', 'C', '0', '0', 'wms:community:list',  'tree',      'admin', NOW(), 'community menu'),
+       (201, 'Property Company', 4, 2, 'property', 'wms/property/index', '1', '0', 'C', '0', '0', 'wms:property:list',   'peoples',   'admin', NOW(), 'property company menu');
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 100), (1, 101), (1, 102), (1, 200), (1, 201), (2, 1), (2, 4), (2, 200), (2, 201);
 
 INSERT INTO `sys_config` (`config_name`,`config_key`,`config_value`,`config_type`,`create_by`,`create_time`,`remark`)
 VALUES ('Captcha switch', 'sys.account.captchaEnabled', 'true', 'Y', 'admin', NOW(), 'captcha on/off'),
@@ -309,5 +312,69 @@ VALUES (1, 'normal',   '0', 'sys_user_status', '', 'primary', 'Y', '0', 'admin',
        (2, 'disabled', '1', 'sys_user_status', '', 'danger',  'N', '0', 'admin', NOW(), 'disabled'),
        (1, 'yes', 'Y', 'sys_yes_no', '', 'primary', 'Y', '0', 'admin', NOW(), 'yes'),
        (2, 'no',  'N', 'sys_yes_no', '', 'danger',  'N', '0', 'admin', NOW(), 'no');
+
+
+-- ----------------------------
+-- 6. WMS business: wms_community (小区) / wms_property_company (物业公司)
+-- ----------------------------
+DROP TABLE IF EXISTS `wms_property_company`;
+CREATE TABLE `wms_property_company` (
+  `company_id`        bigint NOT NULL AUTO_INCREMENT COMMENT 'companyId',
+  `company_name`      varchar(100) NOT NULL COMMENT 'company name',
+  `company_code`      varchar(64)  DEFAULT '' COMMENT 'company code',
+  `short_name`        varchar(50)  DEFAULT '' COMMENT 'short name',
+  `legal_person`      varchar(50)  DEFAULT '' COMMENT 'legal person',
+  `contact_name`      varchar(50)  DEFAULT '' COMMENT 'primary contact',
+  `contact_phone`     varchar(20)  DEFAULT '' COMMENT 'contact phone',
+  `contact_email`     varchar(50)  DEFAULT '' COMMENT 'contact email',
+  `address`           varchar(255) DEFAULT '' COMMENT 'office address',
+  `business_license`  varchar(64)  DEFAULT '' COMMENT 'business license no.',
+  `registered_capital` varchar(50) DEFAULT '' COMMENT 'registered capital',
+  `established_date`  date         DEFAULT NULL COMMENT 'established date',
+  `service_scope`     varchar(500) DEFAULT '' COMMENT 'service scope',
+  `bank_name`         varchar(100) DEFAULT '' COMMENT 'bank name',
+  `bank_account`      varchar(50)  DEFAULT '' COMMENT 'bank account no.',
+  `status`            char(1)      DEFAULT '0' COMMENT '0=normal 1=disabled',
+  `create_by`         varchar(64)  DEFAULT '',
+  `create_time`       datetime     DEFAULT NULL,
+  `update_by`         varchar(64)  DEFAULT '',
+  `update_time`       datetime     DEFAULT NULL,
+  `remark`            varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`company_id`),
+  UNIQUE KEY `uk_company_name` (`company_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COMMENT='property company';
+
+DROP TABLE IF EXISTS `wms_community`;
+CREATE TABLE `wms_community` (
+  `community_id`      bigint NOT NULL AUTO_INCREMENT COMMENT 'communityId',
+  `community_code`    varchar(64)  NOT NULL COMMENT 'community code',
+  `community_name`    varchar(100) NOT NULL COMMENT 'community name',
+  `alias_name`        varchar(100) DEFAULT '' COMMENT 'alias / short name',
+  `company_id`        bigint       DEFAULT NULL COMMENT 'property company id',
+  `province`          varchar(64)  DEFAULT '' COMMENT 'province',
+  `city`              varchar(64)  DEFAULT '' COMMENT 'city',
+  `district`          varchar(64)  DEFAULT '' COMMENT 'district',
+  `address`           varchar(255) DEFAULT '' COMMENT 'detail address',
+  `longitude`         decimal(10,6) DEFAULT NULL COMMENT 'longitude',
+  `latitude`          decimal(10,6) DEFAULT NULL COMMENT 'latitude',
+  `area_covered`      decimal(12,2) DEFAULT NULL COMMENT 'area covered (m2)',
+  `building_count`    int          DEFAULT 0 COMMENT 'building count',
+  `household_count`   int          DEFAULT 0 COMMENT 'household count',
+  `parking_count`     int          DEFAULT 0 COMMENT 'parking count',
+  `property_fee`      decimal(10,2) DEFAULT NULL COMMENT 'property fee (yuan/m2/month)',
+  `developer`         varchar(100) DEFAULT '' COMMENT 'developer',
+  `completed_date`    date         DEFAULT NULL COMMENT 'completed date',
+  `manager_name`      varchar(50)  DEFAULT '' COMMENT 'on-site manager',
+  `manager_phone`     varchar(20)  DEFAULT '' COMMENT 'manager phone',
+  `status`            char(1)      DEFAULT '0' COMMENT '0=normal 1=disabled',
+  `create_by`         varchar(64)  DEFAULT '',
+  `create_time`       datetime     DEFAULT NULL,
+  `update_by`         varchar(64)  DEFAULT '',
+  `update_time`       datetime     DEFAULT NULL,
+  `remark`            varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`community_id`),
+  UNIQUE KEY `uk_community_code` (`community_code`),
+  KEY `idx_company_id` (`company_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COMMENT='community';
 
 SET FOREIGN_KEY_CHECKS = 1;

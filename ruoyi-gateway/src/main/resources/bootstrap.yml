@@ -41,6 +41,10 @@ spring:
           uri: lb://ruoyi-gen
           predicates:
             - Path=/tool/**
+        - id: ruoyi-wms
+          uri: lb://ruoyi-wms
+          predicates:
+            - Path=/wms/**
         - id: ruoyi-monitor
           uri: lb://ruoyi-monitor
           predicates:
