@@ -1,0 +1,19 @@
+# Tomcat
+server:
+  port: 9200
+
+# Spring
+spring:
+  application:
+    name: ruoyi-auth
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

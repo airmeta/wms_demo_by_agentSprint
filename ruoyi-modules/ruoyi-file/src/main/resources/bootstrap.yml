@@ -1,0 +1,21 @@
+server:
+  port: 9202
+
+spring:
+  application:
+    name: ruoyi-file
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+swagger:
+  title: 'File Module'
+  enabled: true

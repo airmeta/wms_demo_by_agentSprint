@@ -1,0 +1,62 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ruoyi-gateway
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: ruoyi-auth
+          uri: lb://ruoyi-auth
+          predicates:
+            - Path=/auth/**
+        - id: ruoyi-system
+          uri: lb://ruoyi-system
+          predicates:
+            - Path=/system/**
+        - id: ruoyi-file
+          uri: lb://ruoyi-file
+          predicates:
+            - Path=/file/**
+        - id: ruoyi-job
+          uri: lb://ruoyi-job
+          predicates:
+            - Path=/job/**
+        - id: ruoyi-gen
+          uri: lb://ruoyi-gen
+          predicates:
+            - Path=/tool/**
+        - id: ruoyi-monitor
+          uri: lb://ruoyi-monitor
+          predicates:
+            - Path=/actuator/**
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 10s
+
+# swagger
+swagger:
+  title: 'Gateway Module'
+  enabled: true
+  authorization:
+    name: Authorization
+    auth-regex: ^.*$
+    auth-schemes: Bearer

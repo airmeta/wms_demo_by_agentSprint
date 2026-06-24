@@ -1,0 +1,43 @@
+# Tomcat
+server:
+  port: 9200
+
+# Spring
+spring:
+  application:
+    name: ruoyi-auth
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ry-cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
+    username:
+    password:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 10s
+
+# Mybatis plus
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: com.ruoyi.system
+
+# swagger
+swagger:
+  title: 'Authentication Module'
+  enabled: true
+  authorization:
+    name: Authorization
+    auth-regex: ^.*$
+    auth-schemes: Bearer

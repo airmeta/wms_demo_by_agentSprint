@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ruoyi.common.core.config.CoreAutoConfig,\
+com.ruoyi.common.core.exception.GlobalExceptionHandler
